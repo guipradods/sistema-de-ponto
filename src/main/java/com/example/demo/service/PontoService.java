@@ -1,45 +1,59 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Ponto;
+import com.example.demo.repository.PontoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class PontoService {
 
-    Ponto ponto = new Ponto();
+    @Autowired
+    private PontoRepository pontoRepository;
 
-    public List baterPonto() {
+    public Ponto registrarHora() {
 
-        ponto.setDiaDoMes(LocalDate.now());
+        if (!checarDataNoBanco(LocalDate.now())) {
+            pontoRepository.save(new Ponto(LocalDate.now()));
+        }
+
+        Ponto ponto = pontoRepository.findByDiaDoMes(LocalDate.now());
 
         if (ponto.getPontoUm() == null) {
             ponto.setPontoUm(LocalTime.now());
+            pontoRepository.save(ponto);
         } else if (ponto.getPontoDois() == null) {
             ponto.setPontoDois(LocalTime.now());
+            pontoRepository.save(ponto);
         } else if (ponto.getPontoTres() == null) {
-            ponto.setPontoTres(LocalTime.now());
+            if (ponto.getPontoDois().plusHours(1).isBefore(LocalTime.now())) {
+                ponto.setPontoTres(LocalTime.now());
+                pontoRepository.save(ponto);
+            } else {
+                return ponto;
+            }
         } else if (ponto.getPontoQuatro() == null) {
             ponto.setPontoQuatro(LocalTime.now());
+            pontoRepository.save(ponto);
         }
 
-        List lista = new ArrayList<>();
-        lista.add(ponto.getDiaDoMes());
-        lista.add(ponto.getPontoUm() == null ? ponto.getPontoUm() : ponto.getPontoUm().format(DateTimeFormatter.ofPattern("HH:mm")));
-        lista.add(ponto.getPontoDois() == null ? ponto.getPontoDois() : ponto.getPontoDois().format(DateTimeFormatter.ofPattern("HH:mm")));
-        lista.add(ponto.getPontoTres() == null ? ponto.getPontoTres() : ponto.getPontoTres().format(DateTimeFormatter.ofPattern("HH:mm")));
-        lista.add(ponto.getPontoQuatro() == null ? ponto.getPontoQuatro() : ponto.getPontoQuatro().format(DateTimeFormatter.ofPattern("HH:mm")));
-
-        return lista;
+        return ponto;
 
     }
-//.format(DateTimeFormatter.ofPattern("HH:mm"))
 
+    public Boolean checarDataNoBanco(LocalDate data) {
+        return pontoRepository.findByDiaDoMes(data) != null;
+    }
+
+    public Boolean checarDiaDaSemanaValido(LocalDate data) {
+        if (data.getDayOfWeek() == DayOfWeek.of(6) || data.getDayOfWeek() == DayOfWeek.of(7)) {
+            return false;
+        }
+        return true;
+    }
 
 }
