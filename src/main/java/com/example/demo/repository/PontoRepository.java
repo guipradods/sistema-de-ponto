@@ -11,4 +11,5 @@ public interface PontoRepository extends JpaRepository<Ponto, Long> {
 
     Ponto findByDiaDoMes(LocalDate diaDoMes);
 
+    Ponto findFirstByOrderByDiaDoMesDesc();
 }

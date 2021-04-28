@@ -41,7 +41,6 @@ public class PontoService {
         } else if (ponto.getPontoQuatro() == null) {
             ponto.setPontoQuatro(LocalTime.now());
             atualizarBancoDeHoras(ponto);
-
             pontoRepository.save(ponto);
         }
 
@@ -64,11 +63,17 @@ public class PontoService {
 
         LocalTime registroUm = ponto.getPontoQuatro().minus(Duration.ofSeconds(ponto.getPontoTres().toSecondOfDay()));
         LocalTime registroDois = ponto.getPontoDois().minus(Duration.ofSeconds(ponto.getPontoUm().toSecondOfDay()));
+
         double bancoDeHoras = (double) (registroUm.plus(Duration.ofSeconds(registroDois.toSecondOfDay()))).getLong(ChronoField.SECOND_OF_DAY) / 3600;
 
         double bancoDeHorasFormatado = Math.round(bancoDeHoras * 100.0) / 100.0;
 
-        ponto.setBancoDeHoras(bancoDeHorasFormatado);
+        if (pontoRepository.findFirstByOrderByDiaDoMesDesc() == null) {
+            ponto.setBancoDeHoras(bancoDeHorasFormatado);
+        } else {
+            bancoDeHorasFormatado = bancoDeHorasFormatado + pontoRepository.findFirstByOrderByDiaDoMesDesc().getBancoDeHoras();
+            ponto.setBancoDeHoras(bancoDeHorasFormatado);
+        }
 
     }
 
