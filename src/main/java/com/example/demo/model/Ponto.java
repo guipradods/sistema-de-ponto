@@ -26,10 +26,10 @@ public class Ponto {
     private LocalTime pontoDois;
     private LocalTime pontoTres;
     private LocalTime pontoQuatro;
+    private Double bancoDeHoras;
 
     public Ponto(LocalDate diaDoMes) {
         this.diaDoMes = diaDoMes;
     }
 
 }
-
