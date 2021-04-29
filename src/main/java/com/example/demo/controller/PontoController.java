@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 
-@RequestMapping("/ponto/")
+@RequestMapping("/ponto")
 @RestController
 public class PontoController {
 

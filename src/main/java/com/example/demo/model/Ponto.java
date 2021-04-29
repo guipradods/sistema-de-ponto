@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,7 +20,7 @@ import java.time.LocalTime;
 public class Ponto {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
     private LocalDate diaDoMes;
     private LocalTime pontoUm;
@@ -27,6 +28,7 @@ public class Ponto {
     private LocalTime pontoTres;
     private LocalTime pontoQuatro;
     private Double bancoDeHoras;
+    private Integer userId;
 
     public Ponto(LocalDate diaDoMes) {
         this.diaDoMes = diaDoMes;
