@@ -20,11 +20,17 @@ public class UsuarioController {
     @PostMapping(path = "/cadastrar")
     public ResponseEntity cadastrarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
 
-        if (usuarioService.checarCPFdisponivel(usuarioDTO)) {
-            usuarioService.cadastrarUsuario(usuarioDTO);
-            return ResponseEntity.ok().body("Usuario Cadastrado");
+        if (!usuarioService.checarCPFdisponivel(usuarioDTO)) {
+            return ResponseEntity.badRequest().body("O usuário já existe");
+        } else if (!usuarioService.checarCPFvalido(usuarioDTO)) {
+            return ResponseEntity.badRequest().body("CPF inválido");
         }
-        return ResponseEntity.badRequest().body("Não foi possível realizar o cadastro");
+        try {
+            usuarioService.cadastrarUsuario(usuarioDTO);
+            return ResponseEntity.ok().body("Usuario cadastrado com sucesso");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Não foi possível realizar o cadastro");
+        }
 
     }
 

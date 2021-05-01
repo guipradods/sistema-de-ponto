@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class UsuarioBuilder {
 
     public Usuario usuarioDtoToEntity(UsuarioDTO usuarioDTO) {
-        return Usuario.builder().cpf(usuarioDTO.getCpf()).nome(usuarioDTO.getNome()).build();
+        return Usuario.builder().cpf(usuarioDTO.getCpf()).nome(usuarioDTO.getNome()).bancoDeHoras(0.0).build();
     }
 
     public UsuarioDTO usuarioToDTO(Usuario usuario) {
