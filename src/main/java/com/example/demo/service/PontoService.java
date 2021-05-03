@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Ponto;
+import com.example.demo.model.Usuario;
 import com.example.demo.repository.PontoRepository;
+import com.example.demo.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +19,16 @@ public class PontoService {
     @Autowired
     private PontoRepository pontoRepository;
 
-    public Ponto registrarHora() {
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-        if (!checarDataNoBanco(LocalDate.now())) {
-            pontoRepository.save(new Ponto(LocalDate.now()));
+    public Ponto registrarHora(Usuario usuarioId) {
+
+        if (!checarDataNoBanco(LocalDate.now(), usuarioId)) {
+            pontoRepository.save(new Ponto(LocalDate.now(), usuarioId));
         }
 
-        Ponto ponto = pontoRepository.findByDiaDoMes(LocalDate.now());
+        Ponto ponto = pontoRepository.findByDiaDoMesAndUsuario(LocalDate.now(), usuarioId);
 
         if (ponto.getPontoUm() == null) {
             ponto.setPontoUm(LocalTime.now());
@@ -40,7 +45,7 @@ public class PontoService {
             }
         } else if (ponto.getPontoQuatro() == null) {
             ponto.setPontoQuatro(LocalTime.now());
-            atualizarBancoDeHoras(ponto);
+            atualizarHorasTrabalhadas(ponto);
             pontoRepository.save(ponto);
         }
 
@@ -48,33 +53,36 @@ public class PontoService {
 
     }
 
-    public Boolean checarDataNoBanco(LocalDate data) {
-        return pontoRepository.findByDiaDoMes(data) != null;
+    public Boolean checarDataNoBanco(LocalDate data, Usuario usuarioId) {
+        return pontoRepository.findByDiaDoMesAndUsuario(data, usuarioId) != null;
+    }
+
+    public Boolean checarUsuario(Usuario usuarioId) {
+        return pontoRepository.findByUsuario(usuarioId) != null;
     }
 
     public Boolean checarDiaDaSemanaValido(LocalDate data) {
-        if (data.getDayOfWeek() == DayOfWeek.of(6) || data.getDayOfWeek() == DayOfWeek.of(7)) {
+        if (data.getDayOfWeek() == DayOfWeek.of(1) || data.getDayOfWeek() == DayOfWeek.of(7)) {
             return false;
         }
         return true;
     }
 
-    public void atualizarBancoDeHoras(Ponto ponto) {
+    public void atualizarHorasTrabalhadas(Ponto ponto) {
 
         LocalTime registroUm = ponto.getPontoQuatro().minus(Duration.ofSeconds(ponto.getPontoTres().toSecondOfDay()));
         LocalTime registroDois = ponto.getPontoDois().minus(Duration.ofSeconds(ponto.getPontoUm().toSecondOfDay()));
 
-        double bancoDeHoras = (double) (registroUm.plus(Duration.ofSeconds(registroDois.toSecondOfDay()))).getLong(ChronoField.SECOND_OF_DAY) / 3600;
+        double horasTrabalhadas = (double) (registroUm.plus(Duration.ofSeconds(registroDois.toSecondOfDay()))).getLong(ChronoField.SECOND_OF_DAY) / 3600;
 
-        double bancoDeHorasFormatado = Math.round(bancoDeHoras * 100.0) / 100.0;
+        double horasTrabalhadasFormatado = Math.round(horasTrabalhadas * 100.0) / 100.0;
 
-        if (pontoRepository.findFirstByOrderByDiaDoMesDesc() == null) {
-            ponto.setBancoDeHoras(bancoDeHorasFormatado);
-        } else {
-            bancoDeHorasFormatado = bancoDeHorasFormatado + pontoRepository.findFirstByOrderByDiaDoMesDesc().getBancoDeHoras();
-            ponto.setBancoDeHoras(bancoDeHorasFormatado);
-        }
+        ponto.setHorasTrabalhadas(horasTrabalhadasFormatado);
 
+    }
+
+    public Boolean checarTodosOsPontos (Ponto ponto) {
+        return ponto.getPontoQuatro() != null;
     }
 
 }

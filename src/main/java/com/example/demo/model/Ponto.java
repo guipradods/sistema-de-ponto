@@ -30,7 +30,7 @@ public class Ponto {
 
     private LocalTime pontoQuatro;
 
-    private Double bancoDeHoras;
+    private Double horasTrabalhadas;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", referencedColumnName = "id")
@@ -38,6 +38,11 @@ public class Ponto {
 
     public Ponto(LocalDate diaDoMes) {
         this.diaDoMes = diaDoMes;
+    }
+
+    public Ponto(LocalDate diaDoMes, Usuario usuarioId) {
+        this.diaDoMes = diaDoMes;
+        this.usuario = usuarioId;
     }
 
 }
