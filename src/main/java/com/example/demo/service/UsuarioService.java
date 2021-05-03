@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.builder.UsuarioBuilder;
-import com.example.demo.model.Usuario;
 import com.example.demo.model.dto.UsuarioDTO;
 import com.example.demo.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +24,8 @@ public class UsuarioService {
 
     }
 
-    public Boolean checarCPFdisponivel(UsuarioDTO usuario) {
-        return usuarioRepository.findByCpf(usuario.getCpf()) == null;
+    public Boolean checarCPFDisponivel(UsuarioDTO usuarioDTO) {
+        return usuarioRepository.findByCpf(usuarioDTO.getCpf()) == null;
     }
 
     public Boolean checarCPFvalido(UsuarioDTO usuario) {

@@ -12,7 +12,7 @@ public interface PontoRepository extends JpaRepository<Ponto, Long> {
 
     Ponto findByDiaDoMes(LocalDate diaDoMes);
 
-    Ponto findByDiaDoMesAndUsuario(LocalDate diaDoMes, Usuario usuarioId);
+    Ponto findByDiaDoMesAndUsuario(LocalDate diaDoMes, Long usuarioId);
 
     Boolean findByUsuario(Usuario usuarioId);
 }

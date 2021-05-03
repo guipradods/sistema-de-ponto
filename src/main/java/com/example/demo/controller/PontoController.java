@@ -18,7 +18,7 @@ public class PontoController {
     private PontoService pontoService;
 
     @PostMapping("/marcar-ponto/{usuarioId}")
-    public ResponseEntity marcarPonto(@PathVariable Usuario usuarioId) {
+    public ResponseEntity marcarPonto(@PathVariable Long usuarioId) {
 
         if (!pontoService.checarUsuario(usuarioId)) {
             return ResponseEntity.badRequest().body("Usuário não encontrado");

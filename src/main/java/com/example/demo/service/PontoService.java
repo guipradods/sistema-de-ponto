@@ -22,10 +22,10 @@ public class PontoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public Ponto registrarHora(Usuario usuarioId) {
+    public Ponto registrarHora(Long usuarioId) {
 
         if (!checarDataNoBanco(LocalDate.now(), usuarioId)) {
-            pontoRepository.save(new Ponto(LocalDate.now(), usuarioId));
+            pontoRepository.save(new Ponto(LocalDate.now(), usuarioRepository.findById(usuarioId).get()));
         }
 
         Ponto ponto = pontoRepository.findByDiaDoMesAndUsuario(LocalDate.now(), usuarioId);
@@ -53,16 +53,16 @@ public class PontoService {
 
     }
 
-    public Boolean checarDataNoBanco(LocalDate data, Usuario usuarioId) {
+    public Boolean checarDataNoBanco(LocalDate data, Long usuarioId) {
         return pontoRepository.findByDiaDoMesAndUsuario(data, usuarioId) != null;
     }
 
-    public Boolean checarUsuario(Usuario usuarioId) {
-        return pontoRepository.findByUsuario(usuarioId) != null;
+    public Boolean checarUsuario(Long usuarioId) {
+        return usuarioRepository.findById(usuarioId) != null;
     }
 
     public Boolean checarDiaDaSemanaValido(LocalDate data) {
-        if (data.getDayOfWeek() == DayOfWeek.of(1) || data.getDayOfWeek() == DayOfWeek.of(7)) {
+        if (data.getDayOfWeek() == DayOfWeek.of(6) || data.getDayOfWeek() == DayOfWeek.of(7)) {
             return false;
         }
         return true;

@@ -20,7 +20,7 @@ public class UsuarioController {
     @PostMapping(path = "/cadastrar")
     public ResponseEntity cadastrarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
 
-        if (!usuarioService.checarCPFdisponivel(usuarioDTO)) {
+        if (!usuarioService.checarCPFDisponivel(usuarioDTO)) {
             return ResponseEntity.badRequest().body("O usuário já existe");
         } else if (!usuarioService.checarCPFvalido(usuarioDTO)) {
             return ResponseEntity.badRequest().body("CPF inválido");
