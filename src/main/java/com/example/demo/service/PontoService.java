@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoField;
+import java.util.Optional;
 
 @Service
 public class PontoService {
@@ -22,13 +23,16 @@ public class PontoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     public Ponto registrarHora(Long usuarioId) {
 
         if (!checarDataNoBanco(LocalDate.now(), usuarioId)) {
             pontoRepository.save(new Ponto(LocalDate.now(), usuarioRepository.findById(usuarioId).get()));
         }
 
-        Ponto ponto = pontoRepository.findByDiaDoMesAndUsuario(LocalDate.now(), usuarioId);
+        Ponto ponto = pontoRepository.findByDiaDoMesAndUsuario(LocalDate.now(), usuarioRepository.findById(usuarioId).get()).orElseThrow();
 
         if (ponto.getPontoUm() == null) {
             ponto.setPontoUm(LocalTime.now());
@@ -46,6 +50,7 @@ public class PontoService {
         } else if (ponto.getPontoQuatro() == null) {
             ponto.setPontoQuatro(LocalTime.now());
             atualizarHorasTrabalhadas(ponto);
+            usuarioService.atualizarBancoDeHoras(usuarioRepository.findById(usuarioId).get());
             pontoRepository.save(ponto);
         }
 
@@ -54,11 +59,13 @@ public class PontoService {
     }
 
     public Boolean checarDataNoBanco(LocalDate data, Long usuarioId) {
-        return pontoRepository.findByDiaDoMesAndUsuario(data, usuarioId) != null;
+        Optional<Usuario> user = usuarioRepository.findById(usuarioId);
+        return pontoRepository.findByDiaDoMesAndUsuario(data, user.get()).isPresent();
     }
 
     public Boolean checarUsuario(Long usuarioId) {
-        return usuarioRepository.findById(usuarioId) != null;
+        Optional<Usuario> user = usuarioRepository.findById(usuarioId);
+        return user.isPresent();
     }
 
     public Boolean checarDiaDaSemanaValido(LocalDate data) {
@@ -79,10 +86,6 @@ public class PontoService {
 
         ponto.setHorasTrabalhadas(horasTrabalhadasFormatado);
 
-    }
-
-    public Boolean checarTodosOsPontos (Ponto ponto) {
-        return ponto.getPontoQuatro() != null;
     }
 
 }

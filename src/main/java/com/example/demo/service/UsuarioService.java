@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.builder.UsuarioBuilder;
+import com.example.demo.model.Usuario;
 import com.example.demo.model.dto.UsuarioDTO;
+import com.example.demo.repository.PontoRepository;
 import com.example.demo.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,15 +19,21 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public void cadastrarUsuario(UsuarioDTO usuarioDTO) {
+    @Autowired
+    private PontoRepository pontoRepository;
 
+    public void cadastrarUsuario(UsuarioDTO usuarioDTO) {
         var novoUsuario = usuarioBuilder.usuarioDtoToEntity(usuarioDTO);
         usuarioRepository.save(novoUsuario);
-
     }
 
     public Boolean checarCPFDisponivel(UsuarioDTO usuarioDTO) {
         return usuarioRepository.findByCpf(usuarioDTO.getCpf()) == null;
+    }
+
+    public void atualizarBancoDeHoras(Usuario usuario) {
+        var horasTrabalhadas = pontoRepository.findSumHorasTrabalhadas(usuario);
+        usuario.setBancoDeHoras(horasTrabalhadas);
     }
 
     public Boolean checarCPFvalido(UsuarioDTO usuario) {

@@ -21,19 +21,16 @@ public class PontoController {
     public ResponseEntity marcarPonto(@PathVariable Long usuarioId) {
 
         if (!pontoService.checarUsuario(usuarioId)) {
-            return ResponseEntity.badRequest().body("Usuário não encontrado");
+            return ResponseEntity.ok().body("Usuário não encontrado");
         } else if (!pontoService.checarDiaDaSemanaValido(LocalDate.now())) {
-            return ResponseEntity.badRequest().body("Sábados e domingos não são permiditos expedientes");
+            return ResponseEntity.ok().body("Sábados e domingos não são permiditos expedientes");
         }
 
         try {
             Ponto ponto = pontoService.registrarHora(usuarioId);
-            if (pontoService.checarTodosOsPontos(ponto)) {
-                return ResponseEntity.badRequest().body("Todos os pontos já foram marcados");
-            }
             return ResponseEntity.ok().body(ponto);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
 
     }
