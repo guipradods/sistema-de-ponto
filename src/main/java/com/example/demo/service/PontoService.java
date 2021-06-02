@@ -41,7 +41,7 @@ public class PontoService {
             ponto.setPontoDois(LocalTime.now());
             pontoRepository.save(ponto);
         } else if (ponto.getPontoTres() == null) {
-            if (ponto.getPontoDois().plusHours(0).isBefore(LocalTime.now())) {
+            if (ponto.getPontoDois().plusHours(1).isBefore(LocalTime.now())) {
                 ponto.setPontoTres(LocalTime.now());
                 pontoRepository.save(ponto);
             } else {
@@ -50,6 +50,7 @@ public class PontoService {
         } else if (ponto.getPontoQuatro() == null) {
             ponto.setPontoQuatro(LocalTime.now());
             atualizarHorasTrabalhadas(ponto);
+            pontoRepository.save(ponto);
             usuarioService.atualizarBancoDeHoras(usuarioRepository.findById(usuarioId).get());
             pontoRepository.save(ponto);
         }
