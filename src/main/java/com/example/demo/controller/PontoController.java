@@ -1,9 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Ponto;
-import com.example.demo.model.Usuario;
 import com.example.demo.service.PontoService;
-import org.apache.tomcat.jni.Local;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +11,10 @@ import java.time.LocalDate;
 
 @RequestMapping("/ponto")
 @RestController
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class PontoController {
 
-    @Autowired
-    private PontoService pontoService;
+    private final PontoService pontoService;
 
     @PostMapping("/marcar-ponto/{usuarioId}")
     public ResponseEntity marcarPonto(@PathVariable Long usuarioId) {

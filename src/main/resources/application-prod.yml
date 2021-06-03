@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    hikari:
+      connection-timeout: 60000
+      maximum-pool-size: 50
+      max-lifetime: 1800000
+      idle-timeout: 600000
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/
+    username: postgres
+    password: 'WjJkbA=='
+    continueOnError: true
+    initialSize: 0
+    timeBetweenEvictionRunsMillis: 5000
+    minEvictableIdleTimeMillis: 5000
+    minIdle: 0
+    initialization-mode: always
+    tomcat:
+      test-while-idle: true
+      time-between-eviction-runs-millis: 3600000
+      validation-query: select 1
+    dbcp2:
+      test-on-borrow: true
+      validation-query: select 1
