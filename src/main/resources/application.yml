@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    active: prod
+  jpa:
+    show-sql: false
+    generate-ddl: true
+    hibernate:
+      naming_strategy: org.hibernate.cfg.DefaultNamingStrategy
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
