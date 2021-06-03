@@ -4,6 +4,7 @@ import com.example.demo.model.Ponto;
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.PontoRepository;
 import com.example.demo.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,16 +16,12 @@ import java.time.temporal.ChronoField;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class PontoService {
 
-    @Autowired
-    private PontoRepository pontoRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private UsuarioService usuarioService;
+    private final PontoRepository pontoRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
 
     public Ponto registrarHora(Long usuarioId) {
 
